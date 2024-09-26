@@ -1,22 +1,25 @@
-import type { NextRequest } from 'next/server'
-import { getRequestContext } from '@cloudflare/next-on-pages'
+import type { NextRequest } from 'next/server';
 
-export const runtime = 'edge'
+export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
-  let responseText = 'Hello World'
+	if (process.env.DISCORD_WEBHOOK_URL === undefined) {
+		return new Response('The server is not configured properly', { status: 500 });
+	}
 
-  // In the edge runtime you can use Bindings that are available in your application
-  // (for more details see:
-  //    - https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-bindings-in-your-nextjs-application
-  //    - https://developers.cloudflare.com/pages/functions/bindings/
-  // )
-  //
-  // KV Example:
-  // const myKv = getRequestContext().env.MY_KV_NAMESPACE
-  // await myKv.put('suffix', ' from a KV store!')
-  // const suffix = await myKv.get('suffix')
-  // responseText += suffix
+	const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			content: '呼び出されました！',
+		}),
+	});
 
-  return new Response(responseText)
+	if (!response.ok) {
+		return new Response('Failed to send a message to Discord', { status: 500 });
+	}
+
+	return new Response('OK');
 }
