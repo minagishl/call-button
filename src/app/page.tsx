@@ -1,6 +1,6 @@
 export default function Home() {
 	return (
-		<main className='flex min-h-screen flex-col items-center p-24 justify-center'>
+		<main className='flex min-h-screen flex-col items-center p-16 md:p-24 justify-center'>
 			<h1 className='font-semibold text-6xl md:text-8xl leading-tight text-zinc-900 text-center font-default'>
 				{process.env.NEXT_PUBLIC_NAME ?? '館長'}が<br />
 				出てくる
